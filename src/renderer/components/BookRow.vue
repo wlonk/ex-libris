@@ -1,7 +1,6 @@
 <template>
   <tr
-    @click="togglePreview"
-    @dblclick="editThis"
+    @click="toggleFocus"
     :class="{ focused: isFocused }"
   >
     <td>{{ book.title }}</td>
@@ -15,7 +14,6 @@
 </template>
 
 <script>
-import { shell } from 'electron'
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -28,23 +26,17 @@ export default {
   computed: {
     ...mapState(['Book']),
     isFocused () {
-      return this.Book.previewBook && this.Book.previewBook.id === this.book.id
+      return this.Book.focusedBooks.includes(this.book.id)
     }
   },
   methods: {
-    ...mapActions(['previewBook', 'unpreviewBook']),
-    openThis () {
-      shell.openItem(this.book.fullPath)
-    },
-    togglePreview () {
-      if (this.Book.previewBook && this.Book.previewBook.id === this.book.id) {
-        this.unpreviewBook()
+    ...mapActions(['focusBook', 'unfocusBook']),
+    toggleFocus () {
+      if (this.isFocused) {
+        this.unfocusBook(this.book)
       } else {
-        this.previewBook(this.book)
+        this.focusBook(this.book)
       }
-    },
-    editThis () {
-      // TODO
     }
   }
 }

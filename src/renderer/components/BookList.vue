@@ -1,9 +1,18 @@
 <template>
-  <div id="wrapper">
+  <div
+    id="wrapper"
+  >
+    <GlobalEvents
+      @keyup.space.stop.prevent.exeact="togglePreview"
+      @keyup.enter.exact="openEdit"
+    />
     <PdfPreview
       v-if="Book.previewBook"
       :src="highlightedBookUrl"
     ></PdfPreview>
+    <EditModal
+      v-if="Book.showEditModal"
+    ></EditModal>
     <table
       class="table is-striped is-hoverable is-fullwidth"
     >
@@ -33,13 +42,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import BookRow from './BookRow'
 import PdfPreview from './PdfPreview'
+import EditModal from './EditModal'
 
 export default {
   name: 'BookList',
-  components: { BookRow, PdfPreview },
+  components: { BookRow, PdfPreview, EditModal },
   computed: {
     ...mapState(['Book']),
     highlightedBookUrl () {
@@ -47,8 +57,22 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['editBook', 'previewBook', 'unpreviewBook']),
     open (link) {
       this.$electron.shell.openExternal(link)
+    },
+    togglePreview () {
+      if (this.Book.previewBook) {
+        this.unpreviewBook()
+      } else if (this.Book.focusedBooks.length) {
+        const book = this.Book.books[this.Book.focusedBooks[0]]
+        this.previewBook(book)
+      }
+    },
+    openEdit () {
+      if (this.Book.focusedBooks.length) {
+        this.editBook()
+      }
     }
   }
 }

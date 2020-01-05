@@ -64,7 +64,7 @@ function scanDropbox (libraryRoot) {
     if (file.endsWith('.pdf')) {
       const newBook = {
         id: uuid(),
-        title: path.basename(file),
+        title: path.basename(file).split('.').slice(0, -1).join('.'),
         authors: [],
         publisher: '',
         series: '',
