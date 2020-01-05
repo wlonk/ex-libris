@@ -65,11 +65,12 @@ function scanDropbox (libraryRoot) {
       const newBook = {
         id: uuid(),
         title: path.basename(file),
-        author: '',
+        authors: [],
         publisher: '',
         series: '',
         edition: '',
         year: '',
+        tags: [],
         fullPath: file
       }
       books[newBook.id] = newBook

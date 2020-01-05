@@ -1,15 +1,16 @@
 <template>
   <tr
     @click="togglePreview"
-    @dblclick="openThis"
+    @dblclick="editThis"
     :class="{ focused: isFocused }"
   >
     <td>{{ book.title }}</td>
-    <td>{{ book.author }}</td>
+    <td>{{ book.authors.join(', ') }}</td>
     <td>{{ book.publisher }}</td>
     <td>{{ book.series }}</td>
     <td>{{ book.edition }}</td>
     <td>{{ book.year }}</td>
+    <td>{{ book.tags.join(', ') }}</td>
   </tr>
 </template>
 
@@ -41,6 +42,9 @@ export default {
       } else {
         this.previewBook(this.book)
       }
+    },
+    editThis () {
+      // TODO
     }
   }
 }

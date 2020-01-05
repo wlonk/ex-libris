@@ -1,16 +1,21 @@
 <template>
   <div id="wrapper">
+    <PdfPreview
+      v-if="Book.previewBook"
+      :src="highlightedBookUrl"
+    ></PdfPreview>
     <table
       class="table is-striped is-hoverable is-fullwidth"
     >
       <thead>
         <tr>
           <th>title</th>
-          <th>author</th>
+          <th>authors</th>
           <th>publisher</th>
           <th>series</th>
           <th>edition</th>
           <th>year</th>
+          <th>tags</th>
         </tr>
       </thead>
       <tfoot>
@@ -24,21 +29,17 @@
         ></BookRow>
       </tbody>
     </table>
-    <webview
-      v-if="Book.previewBook"
-      :src="highlightedBookUrl"
-      plugins=true
-    ></webview>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import BookRow from './BookRow'
+import PdfPreview from './PdfPreview'
 
 export default {
   name: 'BookList',
-  components: { BookRow },
+  components: { BookRow, PdfPreview },
   computed: {
     ...mapState(['Book']),
     highlightedBookUrl () {
@@ -54,14 +55,4 @@ export default {
 </script>
 
 <style>
-#wrapper {
-  display: flex;
-}
-table {
-  flex-shrink: 2;
-}
-webview {
-  flex-shrink: 1;
-  flex-basis: 750px;
-}
 </style>
