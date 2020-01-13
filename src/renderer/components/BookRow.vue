@@ -44,6 +44,6 @@ export default {
 
 <style>
 .focused {
-  background-color: #1b758a !important;
+  background-color: rgb(16, 103, 222) !important;
 }
 </style>

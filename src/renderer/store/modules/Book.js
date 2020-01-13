@@ -1,3 +1,5 @@
+import getDatastore from '../../datastore'
+
 const state = {
   books: {},
   loading: true,
@@ -12,6 +14,7 @@ const mutations = {
     state.focusedBooks = []
   },
   ADD_BOOK (state, book) {
+    // TODO: db action
     state.books = {...state.books, [book.id]: book}
   },
   SET_BOOKS (state, books) {
@@ -42,6 +45,7 @@ const mutations = {
     state.showEditModal = false
   },
   UPDATE_BOOKS (state, books) {
+    getDatastore().insert(Object.values(books))
     state.books = {
       ...state.books,
       ...books

@@ -1,12 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
-
-import finder from 'findit'
-import path from 'path'
-import uuid from 'uuid/v4'
-
-import store from '../renderer/store'
+import loadDbContents from './loadDb'
 
 /**
  * Set `__static` path to static files in production
@@ -26,7 +21,7 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 560,
     useContentSize: true,
     width: 1000,
     webviewTag: true
@@ -38,49 +33,7 @@ function createWindow () {
     mainWindow = null
   })
 
-  // TODO: Get this value from settings.
-  // TODO: Store data in database, pull additional values from filesystem?
-  const rootDir = '/Users/kit/Dropbox/Apps/Ex Libris/RPGs/Buried without Ceremony'
-  scanDropbox(rootDir)
-}
-
-function scanDropbox (libraryRoot) {
-  // const FILE_TYPES = new Set(['.pdf', '.txt'])
-  store.dispatch('setLoading')
-  store.dispatch('unpreviewBook')
-  store.dispatch('clearBooks')
-
-  const find = finder(libraryRoot)
-  const books = {}
-
-  find.on('directory', (dir, stat, stop) => {
-    const base = path.basename(dir)
-    if (base.startsWith('.')) {
-      stop()
-    }
-  })
-
-  find.on('file', (file) => {
-    if (file.endsWith('.pdf')) {
-      const newBook = {
-        id: uuid(),
-        title: path.basename(file).split('.').slice(0, -1).join('.'),
-        authors: [],
-        publisher: '',
-        series: '',
-        edition: '',
-        year: '',
-        tags: [],
-        fullPath: file
-      }
-      books[newBook.id] = newBook
-    }
-  })
-
-  find.on('end', () => {
-    store.dispatch('setBooks', books)
-    store.dispatch('unsetLoading')
-  })
+  loadDbContents()
 }
 
 app.on('ready', createWindow)
