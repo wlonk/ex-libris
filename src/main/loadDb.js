@@ -1,24 +1,22 @@
 'use strict'
 
 import store from '../renderer/store'
-// import db from './datastore'
-
-const db = {
-  find: () => {}
-}
+import getDatastore from '../renderer/datastore'
 
 export default () => {
   store.dispatch('setLoading')
   store.dispatch('unpreviewBook')
   store.dispatch('clearBooks')
 
-  // TODO: replace this with an action dispatch, so that the DB access happens
-  // reliably through the render process.
-  db.find({}, (err, docs) => {
+  const db = getDatastore()
+  db.find({}, (err, books) => {
     if (err) {
       console.warn(err)
       return
     }
-    store.dispatch('setBooks', docs)
+    const newBooks = books.reduce((acc, book) => {
+      return {...acc, [book._id]: book}
+    }, {})
+    store.dispatch('setBooks', newBooks)
   })
 }

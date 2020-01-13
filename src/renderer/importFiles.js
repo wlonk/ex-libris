@@ -2,13 +2,12 @@
 
 import finder from 'findit'
 import path from 'path'
-import uuid from 'uuid/v4'
 import store from './store'
 
 export default (rootDirectory) => {
   store.dispatch('setLoading')
   const find = finder(rootDirectory)
-  const books = {}
+  const books = []
 
   find.on('directory', (dir, stat, stop) => {
     const base = path.basename(dir)
@@ -20,7 +19,6 @@ export default (rootDirectory) => {
   find.on('file', (file) => {
     if (file.endsWith('.pdf')) {
       const newBook = {
-        id: uuid(),
         title: path.basename(file).split('.').slice(0, -1).join('.'),
         authors: [],
         publisher: '',
@@ -30,7 +28,7 @@ export default (rootDirectory) => {
         tags: [],
         fullPath: file
       }
-      books[newBook.id] = newBook
+      books.push(newBook)
     }
   })
 

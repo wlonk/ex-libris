@@ -6,7 +6,7 @@
  - [X] batch-edit
    - [ ] Fix UI around click/cmd-click/shift-click and selecting multiple rows
          at once. See Note below for details.
- - [ ] persist
+ - [X] persist
  - [ ] sort
  - [ ] filter
  - [ ] break authors and tags into elements in UI

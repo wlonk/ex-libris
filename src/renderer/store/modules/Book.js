@@ -10,12 +10,11 @@ const state = {
 
 const mutations = {
   CLEAR_BOOKS (state) {
-    state.books = {}
     state.focusedBooks = []
   },
   ADD_BOOK (state, book) {
     // TODO: db action
-    state.books = {...state.books, [book.id]: book}
+    state.books = {...state.books, [book._id]: book}
   },
   SET_BOOKS (state, books) {
     state.books = books
@@ -27,10 +26,10 @@ const mutations = {
     state.loading = false
   },
   FOCUS_BOOK (state, book) {
-    state.focusedBooks = [...state.focusedBooks, book.id]
+    state.focusedBooks = [...state.focusedBooks, book._id]
   },
   UNFOCUS_BOOK (state, book) {
-    state.focusedBooks = [...state.focusedBooks].filter(bookId => book.id !== bookId)
+    state.focusedBooks = [...state.focusedBooks].filter(bookId => book._id !== bookId)
   },
   PREVIEW_BOOK (state, book) {
     state.previewBook = book
@@ -45,7 +44,6 @@ const mutations = {
     state.showEditModal = false
   },
   UPDATE_BOOKS (state, books) {
-    getDatastore().insert(Object.values(books))
     state.books = {
       ...state.books,
       ...books
@@ -88,7 +86,16 @@ const actions = {
     commit('UNEDIT_BOOK')
   },
   updateBooks ({ commit }, books) {
-    commit('UPDATE_BOOKS', books)
+    getDatastore().insert(books, (err, books) => {
+      if (err) {
+        console.warn('Error accessing db:', err)
+        return
+      }
+      const newBooks = books.reduce((acc, book) => {
+        return {...acc, [book._id]: book}
+      }, {})
+      commit('UPDATE_BOOKS', newBooks)
+    })
   }
 }
 

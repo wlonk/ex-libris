@@ -3,7 +3,7 @@
     id="wrapper"
   >
     <GlobalEvents
-      @keyup.space.stop.prevent.exeact="togglePreview"
+      @keydown.space.stop.prevent.exact="togglePreview"
       @keyup.enter.exact="openEdit"
     />
     <PdfPreview
@@ -31,8 +31,8 @@
       </tfoot>
       <tbody>
         <BookRow
-          v-for="(book, bookId, index) in Book.books"
-          :key="book.id"
+          v-for="(book, index) in sortedBooks"
+          :key="book._id"
           :index="index"
           :book="book"
         ></BookRow>
@@ -52,6 +52,20 @@ export default {
   components: { BookRow, PdfPreview, EditModal },
   computed: {
     ...mapState(['Book']),
+    sortedBooks () {
+      // TODO: this will use some sort criterion when set.
+      return Object.values(this.Book.books).sort((a, b) => {
+        const titleA = a.title.toUpperCase()
+        const titleB = b.title.toUpperCase()
+        if (titleA < titleB) {
+          return -1
+        }
+        if (titleA > titleB) {
+          return 1
+        }
+        return 0
+      })
+    },
     highlightedBookUrl () {
       return this.Book.previewBook ? `file://${this.Book.previewBook.fullPath}` : ''
     }

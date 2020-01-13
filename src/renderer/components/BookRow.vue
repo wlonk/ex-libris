@@ -26,7 +26,7 @@ export default {
   computed: {
     ...mapState(['Book']),
     isFocused () {
-      return this.Book.focusedBooks.includes(this.book.id)
+      return this.Book.focusedBooks.includes(this.book._id)
     }
   },
   methods: {
