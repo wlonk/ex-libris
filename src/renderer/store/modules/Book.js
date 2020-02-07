@@ -2,6 +2,10 @@ import getDatastore from '../../datastore'
 
 const state = {
   books: {},
+  sortKey: {
+    key: 'title',
+    ascending: true
+  },
   loading: true,
   focusedBooks: [],
   previewBook: null,
@@ -9,6 +13,9 @@ const state = {
 }
 
 const mutations = {
+  SET_SORT_KEY (state, key) {
+    state.sortKey = key
+  },
   CLEAR_BOOKS (state) {
     state.focusedBooks = []
   },
@@ -31,6 +38,12 @@ const mutations = {
   UNFOCUS_BOOK (state, book) {
     state.focusedBooks = [...state.focusedBooks].filter(bookId => book._id !== bookId)
   },
+  SET_FOCUS (state, newFocus) {
+    state.focusedBooks = newFocus
+  },
+  ADD_FOCUS (state, newFocuses) {
+    state.focusedBooks = state.focusedBooks.concat(newFocuses)
+  },
   PREVIEW_BOOK (state, book) {
     state.previewBook = book
   },
@@ -52,6 +65,9 @@ const mutations = {
 }
 
 const actions = {
+  setSortKey ({ commit }, key) {
+    commit('SET_SORT_KEY', key)
+  },
   clearBooks ({ commit }) {
     commit('CLEAR_BOOKS')
   },
@@ -73,6 +89,12 @@ const actions = {
   unfocusBook ({ commit }, book) {
     commit('UNFOCUS_BOOK', book)
   },
+  setFocus ({ commit }, newFocus) {
+    commit('SET_FOCUS', newFocus)
+  },
+  addFocus ({ commit }, newFocuses) {
+    commit('ADD_FOCUS', newFocuses)
+  },
   previewBook ({ commit }, book) {
     commit('PREVIEW_BOOK', book)
   },
@@ -85,7 +107,7 @@ const actions = {
   uneditBook ({ commit }) {
     commit('UNEDIT_BOOK')
   },
-  updateBooks ({ commit }, books) {
+  insertBooks ({ commit }, books) {
     getDatastore().insert(books, (err, books) => {
       if (err) {
         console.warn('Error accessing db:', err)
@@ -94,6 +116,20 @@ const actions = {
       const newBooks = books.reduce((acc, book) => {
         return {...acc, [book._id]: book}
       }, {})
+      commit('UPDATE_BOOKS', newBooks)
+    })
+  },
+  updateBooks ({ commit }, { bookIds, updatedFields, newBooks }) {
+    const query = { _id: { $in: bookIds } }
+    const update = updatedFields
+    const options = { multi: true, returnUpdatedDocs: true }
+    // TODO: Looks like this is overwriting the fields outside of
+    // updated-fields. Can I just spot-edit fields with NeDB?
+    getDatastore().update(query, update, options, (err, _, affectedDocuments) => {
+      if (err) {
+        console.warn('Error accessing db:', err)
+        return
+      }
       commit('UPDATE_BOOKS', newBooks)
     })
   }

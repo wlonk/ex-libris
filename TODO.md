@@ -7,7 +7,7 @@
    - [ ] Fix UI around click/cmd-click/shift-click and selecting multiple rows
          at once. See Note below for details.
  - [X] persist
- - [ ] sort
+ - [X] sort
  - [ ] filter
  - [ ] break authors and tags into elements in UI
  - [ ] configure library root
@@ -31,3 +31,5 @@ Shift-click:
 
 Shift-cmd-click:
  - As cmd-click.
+
+Also support typing

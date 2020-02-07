@@ -33,7 +33,7 @@ export default (rootDirectory) => {
   })
 
   find.on('end', () => {
-    store.dispatch('updateBooks', books)
+    store.dispatch('insertBooks', books)
     store.dispatch('unsetLoading')
   })
 }

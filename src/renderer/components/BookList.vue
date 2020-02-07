@@ -18,13 +18,13 @@
     >
       <thead>
         <tr>
-          <th>title</th>
-          <th>authors</th>
-          <th>publisher</th>
-          <th>series</th>
-          <th>edition</th>
-          <th>year</th>
-          <th>tags</th>
+          <th @click="sortBy('title')">title</th>
+          <th @click="sortBy('authors')">authors</th>
+          <th @click="sortBy('publisher')">publisher</th>
+          <th @click="sortBy('series')">series</th>
+          <th @click="sortBy('edition')">edition</th>
+          <th @click="sortBy('year')">year</th>
+          <th @click="sortBy('tags')">tags</th>
         </tr>
       </thead>
       <tfoot>
@@ -35,6 +35,7 @@
           :key="book._id"
           :index="index"
           :book="book"
+          :sortedBooks="sortedBooks"
         ></BookRow>
       </tbody>
     </table>
@@ -53,15 +54,23 @@ export default {
   computed: {
     ...mapState(['Book']),
     sortedBooks () {
-      // TODO: this will use some sort criterion when set.
       return Object.values(this.Book.books).sort((a, b) => {
-        const titleA = a.title.toUpperCase()
-        const titleB = b.title.toUpperCase()
-        if (titleA < titleB) {
-          return -1
+        const { key, ascending } = this.Book.sortKey
+        const flip = ascending ? 1 : -1
+        let keyA
+        let keyB
+        if (key === 'tags' || key === 'authors') {
+          keyA = (a[key] || []).join('|').toUpperCase()
+          keyB = (b[key] || []).join('|').toUpperCase()
+        } else {
+          keyA = (a[key] || '').toUpperCase()
+          keyB = (b[key] || '').toUpperCase()
         }
-        if (titleA > titleB) {
-          return 1
+        if (keyA < keyB) {
+          return -1 * flip
+        }
+        if (keyA > keyB) {
+          return 1 * flip
         }
         return 0
       })
@@ -71,7 +80,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['editBook', 'previewBook', 'unpreviewBook']),
+    ...mapActions(['setSortKey', 'uneditBook', 'editBook', 'previewBook', 'unpreviewBook']),
     open (link) {
       this.$electron.shell.openExternal(link)
     },
@@ -87,10 +96,23 @@ export default {
       if (this.Book.focusedBooks.length) {
         this.editBook()
       }
+    },
+    sortBy (key) {
+      let ascending
+      if (this.Book.sortKey.key === key) {
+        ascending = !this.Book.sortKey.ascending
+      } else {
+        ascending = true
+      }
+      const compoundKey = { key, ascending }
+      this.setSortKey(compoundKey)
     }
   }
 }
 </script>
 
 <style>
+tr {
+  cursor: pointer;
+}
 </style>

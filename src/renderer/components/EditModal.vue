@@ -73,6 +73,17 @@ export default {
     ...mapState(['Book']),
     newBook () {
       const books = this.Book.focusedBooks.map(id => this.Book.books[id])
+      if (!books.length) {
+        return {
+          title: '',
+          authors: '',
+          publisher: '',
+          series: '',
+          edition: '',
+          year: '',
+          tags: ''
+        }
+      }
       const firstBook = books[0]
       return {
         title: combinedValueHelper(books, firstBook, 'title'),
@@ -103,7 +114,6 @@ export default {
         'tags'
       ]
       const updatedFields = {}
-      const books = this.Book.focusedBooks.map(id => this.Book.books[id])
 
       fields.forEach(field => {
         let val = this.newBook[field]
@@ -113,21 +123,22 @@ export default {
       })
 
       listFields.forEach(field => {
-        let val = this.newBook[field]
-        if (val) {
-          updatedFields[field] = this.newBook[field].toString().split(',').map(val => val.trim())
+        let vals = this.newBook[field]
+        if (vals) {
+          updatedFields[field] = this.newBook[field].toString().split(',').map(val => val.trim()).filter(val => Boolean(val))
         }
       })
 
+      const books = this.Book.focusedBooks.map(id => this.Book.books[id])
       const newBooks = books.map(book => ({
         ...book,
         ...updatedFields
       })).reduce((acc, book) => ({
         ...acc,
-        [book.id]: book
+        [book._id]: book
       }), {})
 
-      this.updateBooks(newBooks)
+      this.updateBooks({ bookIds: this.Book.focusedBooks, updatedFields, newBooks })
       this.uneditBook()
     }
   }
