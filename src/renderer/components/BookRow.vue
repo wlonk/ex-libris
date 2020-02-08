@@ -65,9 +65,7 @@ export default {
       }
     },
     bareClick () {
-      // TODO: avoid flash rerender by shortcutting this if appropriate:
-      this.setFocus([])
-      this.focusBook(this.book)
+      this.setFocus([this.book._id])
     },
     cmdClick () {
       if (this.Book.focusedBooks.includes(this.book._id)) {

@@ -1,12 +1,13 @@
 # To Do
 
  - [X] edit
-   - [ ] Fix bug where spacebar scrolls list
-   - [ ] Fix bug where spacebar in edit modal opens preview and scrolls list
+   - [X] Fix bug where spacebar scrolls list
+   - [X] Fix bug where spacebar in edit modal opens preview and scrolls list
  - [X] batch-edit
-   - [ ] Fix UI around click/cmd-click/shift-click and selecting multiple rows
+   - [X] Fix UI around click/cmd-click/shift-click and selecting multiple rows
          at once. See Note below for details.
  - [X] persist
+   - [X] Fix bug where empty fields are updated to blank in the DB
  - [X] sort
  - [ ] filter
  - [ ] break authors and tags into elements in UI

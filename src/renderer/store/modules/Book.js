@@ -121,7 +121,7 @@ const actions = {
   },
   updateBooks ({ commit }, { bookIds, updatedFields, newBooks }) {
     const query = { _id: { $in: bookIds } }
-    const update = updatedFields
+    const update = { '$set': updatedFields }
     const options = { multi: true, returnUpdatedDocs: true }
     // TODO: Looks like this is overwriting the fields outside of
     // updated-fields. Can I just spot-edit fields with NeDB?

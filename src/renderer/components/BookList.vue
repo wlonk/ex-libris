@@ -3,7 +3,7 @@
     id="wrapper"
   >
     <GlobalEvents
-      @keydown.space.stop.prevent.exact="togglePreview"
+      @keydown.space="togglePreview"
       @keyup.enter.exact="openEdit"
     />
     <PdfPreview
@@ -84,7 +84,13 @@ export default {
     open (link) {
       this.$electron.shell.openExternal(link)
     },
-    togglePreview () {
+    togglePreview (evt) {
+      // If we're in an input right now, just let it be a space.
+      if (document.querySelectorAll('input:focus').length > 0) {
+        return
+      }
+      event.preventDefault()
+      event.stopPropagation()
       if (this.Book.previewBook) {
         this.unpreviewBook()
       } else if (this.Book.focusedBooks.length) {
