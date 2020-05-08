@@ -6,11 +6,13 @@
  - [X] batch-edit
    - [X] Fix UI around click/cmd-click/shift-click and selecting multiple rows
          at once. See Note below for details.
+   - [ ] Fix bug where shift-click selects text
  - [X] persist
    - [X] Fix bug where empty fields are updated to blank in the DB
+   - [ ] Fix bug where you can't empty a field in the edit modal
  - [X] sort
- - [ ] filter
- - [ ] break authors and tags into elements in UI
+ - [X] filter
+ - [X] break authors and tags into elements in UI
  - [ ] configure library root
 
 ## OS X click-in-table behavior:

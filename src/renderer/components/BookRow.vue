@@ -4,12 +4,16 @@
     :class="{ focused: isFocused }"
   >
     <td>{{ book.title }}</td>
-    <td>{{ bookAuthors }}</td>
+    <td>
+      <span class="tag" v-for="(author, index) in book.authors" :key="index">{{ author }}</span>
+    </td>
     <td>{{ book.publisher }}</td>
     <td>{{ book.series }}</td>
     <td>{{ book.edition }}</td>
     <td>{{ book.year }}</td>
-    <td>{{ bookTags }}</td>
+    <td>
+      <span class="tag" v-for="(tag, index) in book.tags" :key="index">{{ tag }}</span>
+    </td>
   </tr>
 </template>
 
@@ -101,6 +105,6 @@ export default {
 
 <style>
 .focused {
-  background-color: rgb(16, 103, 222) !important;
+  background-color: rgb(0, 99, 225) !important;
 }
 </style>

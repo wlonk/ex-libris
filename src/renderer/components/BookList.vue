@@ -13,6 +13,7 @@
     <EditModal
       v-if="Book.showEditModal"
     ></EditModal>
+    <input v-model="searchFilter" placeholder="Search" />
     <table
       class="table is-striped is-hoverable is-fullwidth"
     >
@@ -31,11 +32,11 @@
       </tfoot>
       <tbody>
         <BookRow
-          v-for="(book, index) in sortedBooks"
+          v-for="(book, index) in sortedFilteredBooks"
           :key="book._id"
           :index="index"
           :book="book"
-          :sortedBooks="sortedBooks"
+          :sortedFilteredBooks="sortedFilteredBooks"
         ></BookRow>
       </tbody>
     </table>
@@ -51,29 +52,50 @@ import EditModal from './EditModal'
 export default {
   name: 'BookList',
   components: { BookRow, PdfPreview, EditModal },
+  data () {
+    return {searchFilter: ''}
+  },
   computed: {
     ...mapState(['Book']),
-    sortedBooks () {
-      return Object.values(this.Book.books).sort((a, b) => {
-        const { key, ascending } = this.Book.sortKey
-        const flip = ascending ? 1 : -1
-        let keyA
-        let keyB
-        if (key === 'tags' || key === 'authors') {
-          keyA = (a[key] || []).join('|').toUpperCase()
-          keyB = (b[key] || []).join('|').toUpperCase()
-        } else {
-          keyA = (a[key] || '').toUpperCase()
-          keyB = (b[key] || '').toUpperCase()
-        }
-        if (keyA < keyB) {
-          return -1 * flip
-        }
-        if (keyA > keyB) {
-          return 1 * flip
-        }
-        return 0
-      })
+    sortedFilteredBooks () {
+      return Object
+        .values(this.Book.books)
+        .filter((book) => {
+          if (!this.searchFilter.length) {
+            return true
+          } else {
+            const fields = ['title', 'publisher', 'series', 'edition', 'year']
+            const arrayFields = ['authors', 'tags']
+            const filter = this.searchFilter.toLowerCase()
+            return fields.some((field) => {
+              return book[field].toLowerCase().includes(filter)
+            }) || arrayFields.some((field) => {
+              return book[field].some((val) => {
+                return val.toLowerCase().includes(filter)
+              })
+            })
+          }
+        })
+        .sort((a, b) => {
+          const { key, ascending } = this.Book.sortKey
+          const flip = ascending ? 1 : -1
+          let keyA
+          let keyB
+          if (key === 'tags' || key === 'authors') {
+            keyA = (a[key] || []).join('|').toUpperCase()
+            keyB = (b[key] || []).join('|').toUpperCase()
+          } else {
+            keyA = (a[key] || '').toUpperCase()
+            keyB = (b[key] || '').toUpperCase()
+          }
+          if (keyA < keyB) {
+            return -1 * flip
+          }
+          if (keyA > keyB) {
+            return 1 * flip
+          }
+          return 0
+        })
     },
     highlightedBookUrl () {
       return this.Book.previewBook ? `file://${this.Book.previewBook.fullPath}` : ''

@@ -17,7 +17,7 @@
           <div class="field">
             <label class="label">Authors</label>
             <div class="control">
-              <input class="input" type="text" name="authors" v-model="newBook.authors">
+              <input class="input" type="tags" name="authors" v-model="newBook.authors">
             </div>
           </div>
           <div class="field">
@@ -47,7 +47,7 @@
           <div class="field">
             <label class="label">Tags</label>
             <div class="control">
-              <input class="input" type="text" name="tags" v-model="newBook.tags">
+              <input class="input" type="tags" name="tags" v-model="newBook.tags">
             </div>
           </div>
         </form>
@@ -118,14 +118,17 @@ export default {
       fields.forEach(field => {
         let val = this.newBook[field]
         if (val) {
-          updatedFields[field] = this.newBook[field]
+          updatedFields[field] = val
         }
       })
 
       listFields.forEach(field => {
         let vals = this.newBook[field]
         if (vals) {
-          updatedFields[field] = this.newBook[field].toString().split(',').map(val => val.trim()).filter(val => Boolean(val))
+          let val = vals.toString().split(',').map(val => val.trim()).filter(val => Boolean(val))
+          if (val) {
+            updatedFields[field] = val
+          }
         }
       })
 
