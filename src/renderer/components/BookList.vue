@@ -13,7 +13,7 @@
     <EditModal
       v-if="Book.showEditModal"
     ></EditModal>
-    <input v-model="searchFilter" placeholder="Search" />
+    <input v-model="searchFilter" placeholder="Search" class="input" />
     <table
       class="table is-striped is-hoverable is-fullwidth"
     >
