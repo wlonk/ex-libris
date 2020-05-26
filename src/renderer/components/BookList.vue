@@ -13,7 +13,10 @@
     <EditModal
       v-if="Book.showEditModal"
     ></EditModal>
-    <input v-model="searchFilter" placeholder="Search" class="input" />
+    <div class="field">
+      <input v-model="searchFilter" placeholder="Search" class="input" />
+      <p class="help has-text-centered">{{ sortedFilteredBooks.length }} books</p>
+    </div>
     <table
       class="table is-striped is-hoverable is-fullwidth"
     >
