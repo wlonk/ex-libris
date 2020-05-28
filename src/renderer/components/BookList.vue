@@ -4,7 +4,9 @@
   >
     <GlobalEvents
       @keydown.space="togglePreview"
-      @keyup.enter.exact="openEdit"
+      @keyup.69.ctrl="openEdit"
+      @keyup.79.ctrl="openSelected"
+      @keyup.esc="uneditBook"
     />
     <PdfPreview
       v-if="Book.previewBook"
@@ -106,8 +108,16 @@ export default {
   },
   methods: {
     ...mapActions(['setSortKey', 'uneditBook', 'editBook', 'previewBook', 'unpreviewBook']),
-    open (link) {
-      this.$electron.shell.openExternal(link)
+    openSelected () {
+      this.Book.focusedBooks.forEach(
+        (bookId) => {
+          const book = this.Book.books[bookId]
+          console.log(book.fullPath)
+          const shell = this.$electron.shell
+          debugger
+          shell.openPath(book.fullPath)
+        }
+      )
     },
     togglePreview (evt) {
       // If we're in an input right now, just let it be a space.
@@ -145,5 +155,8 @@ export default {
 <style>
 tr {
   cursor: pointer;
+}
+thead, tbody {
+  user-select: none;
 }
 </style>

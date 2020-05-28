@@ -6,8 +6,8 @@
         <p class="modal-card-title">Edit</p>
         <button class="delete" aria-label="close" @click="cancel"></button>
       </header>
-      <section class="modal-card-body">
-        <form>
+      <form @submit.stop="save">
+        <section class="modal-card-body">
           <div class="field">
             <label class="label">Title</label>
             <div class="control">
@@ -50,12 +50,12 @@
               <input class="input" type="tags" name="tags" v-model="newBook.tags">
             </div>
           </div>
-        </form>
-      </section>
-      <footer class="modal-card-foot">
-        <button class="button is-success" @click="save">Save changes</button>
-        <button class="button" @click="cancel">Cancel</button>
-      </footer>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" @click="save">Save changes</button>
+          <button class="button" @click="cancel">Cancel</button>
+        </footer>
+      </form>
     </div>
   </div>
 </template>
@@ -101,6 +101,11 @@ export default {
     cancel () {
       this.uneditBook()
     },
+    valChanged (value, field) {
+      const books = this.Book.focusedBooks.map(id => this.Book.books[id])
+      const firstBook = books[0]
+      return combinedValueHelper(books, firstBook, field) !== value
+    },
     save () {
       const fields = [
         'title',
@@ -117,7 +122,7 @@ export default {
 
       fields.forEach(field => {
         let val = this.newBook[field]
-        if (val) {
+        if (this.valChanged(val, field)) {
           updatedFields[field] = val
         }
       })
@@ -126,7 +131,7 @@ export default {
         let vals = this.newBook[field]
         if (vals) {
           let val = vals.toString().split(',').map(val => val.trim()).filter(val => Boolean(val))
-          if (val) {
+          if (this.valChanged(val, field)) {
             updatedFields[field] = val
           }
         }

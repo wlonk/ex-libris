@@ -26,7 +26,7 @@ export default {
     book: {
       type: Object
     },
-    sortedBooks: {
+    sortedFilteredBooks: {
       type: Array
     }
   },
@@ -83,7 +83,7 @@ export default {
       if (focusedBooks.includes(this.book._id)) {
         // pass
       } else if (focusedBooks.length > 0) {
-        const bookIds = this.sortedBooks.map(book => book._id)
+        const bookIds = this.sortedFilteredBooks.map(book => book._id)
         // TODO: this isn't _quite_ the last click; it's the last click that
         // caused a select. Good enough for now, but subtle bug.
         const lastClick = focusedBooks[focusedBooks.length - 1]

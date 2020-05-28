@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "Kit La Touche <kit@transneptune.net>",
   "description": "Manage your library",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
